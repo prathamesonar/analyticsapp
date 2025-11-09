@@ -28,13 +28,6 @@ This project is a monorepo with three distinct services and a shared database pa
 | **AI Layer** | `apps/vanna-ai`| Python (FastAPI), Groq SDK (Llama 3.3 70B), SQL Alchemy | Render |
 | **Database** | `packages/database`| PostgreSQL (Neon), Prisma | Neon (Serverless) |
 
-### Deployment Strategy: Vercel Rewrites
-
-To maintain separate `apps/web` and `apps/api` folders while serving both from the same domain (e.g., `yourapp.vercel.app`), this project uses **Vercel Rewrites**.
-
-1.  `apps/api` is deployed as a standalone Vercel project (`my-project-api.vercel.app`).
-2.  `apps/web` is deployed as the primary Vercel project (`yourapp.vercel.app`).
-3.  A `vercel.json` file in `apps/web` rewrites all requests from `/api/*` to the `my-project-api.vercel.app` destination, making it seamless to the user.
 
 ---
 
@@ -125,59 +118,6 @@ npm run dev
   * **Vanna AI:** `http://localhost:8000`
 
 -----
-
-## ☁️ Production Deployment
-
-Follow these steps exactly to deploy your application.
-
-### Step 1: Deploy Vanna AI Server (Render)
-
-1.  Create a **New Web Service** on Render and connect your GitHub repo.
-2.  **Root Directory:** `apps/vanna-ai`
-3.  **Build Command:** `pip install -r requirements.txt && pip install psycopg2-binary`
-4.  **Start Command:** `uvicorn main:app --host 0.0.0.0 --port $PORT`
-5.  **Add Environment Variables:** `DATABASE_URL` and `GROQ_API_KEY`.
-6.  Click **Deploy**. Copy the public URL (e.g., `https://my-vanna-app.onrender.com`). This is your `VANNA_API_BASE_URL`.
-
-### Step 2: Deploy Next.js API (Vercel Backend)
-
-1.  Create a **New Project** on Vercel and connect your repo.
-2.  **Root Directory:** `apps/api`
-3.  **Add Environment Variables:** `DATABASE_URL`, `GROQ_API_KEY`, and `VANNA_API_BASE_URL` (from Step 1).
-4.  **Important:** Ensure all `route.ts` files in `apps/api/app/api/` contain `export const dynamic = 'force-dynamic';` to prevent build failures.
-5.  Click **Deploy**. Copy the Vercel-assigned domain (e.g., `my-project-api.vercel.app`).
-
-### Step 3: Deploy Next.js Frontend (Vercel Frontend)
-
-1.  **Configure Rewrites:** Create a file named `vercel.json` inside the `apps/web` folder.
-
-      * **File:** `apps/web/vercel.json`
-      * **Content:**
-        ```json
-        {
-          "rewrites": [
-            {
-              "source": "/api/:path*",
-              "destination": "[https://my-project-api.vercel.app/api/:path](https://my-project-api.vercel.app/api/:path)*"
-            }
-          ]
-        }
-        ```
-
-    *(**Note:** You MUST replace the `destination` URL with your own API URL from Step 2).*
-
-2.  Create a **New Project** on Vercel (this is your final, public-facing app).
-
-3.  **Root Directory:** `apps/web`
-
-4.  **Add Environment Variables:**
-
-      * `NEXT_PUBLIC_API_BASE`: `/api`
-
-5.  Click **Deploy**. This will be your main application URL.
-
------
-
 ## 💾 Database Schema
 
 The JSON data is normalized into three relational tables.
