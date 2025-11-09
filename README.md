@@ -5,9 +5,9 @@ This is a production-grade, full-stack web application built in a Turborepo mono
 
 ##  Live Demo URLs
 
-* **Frontend (Vercel):** `https://<your-frontend-app>.vercel.app`
-* **Backend API (Vercel):** `https://<your-frontend-app>.vercel.app/api`
-* **Vanna AI (Render):** `https://vannaapp.onrender.com`
+* **Frontend (Vercel):** https://dashboard-ps.vercel.app
+* **Backend API (Vercel):** https://dashboard.backend.vercel.app/api
+* **Vanna AI (Render):** https://vannaapp.onrender.com
 
 ---
 
@@ -31,7 +31,7 @@ This project is a monorepo with three distinct services and a shared database pa
 
 ---
 
-## 🔑 Environment Variables
+##  Environment Variables
 
 You must set these variables in *both* your local `.env` files and in your production hosting dashboards (Vercel, Render).
 
@@ -118,7 +118,7 @@ npm run dev
   * **Vanna AI:** `http://localhost:8000`
 
 -----
-## 💾 Database Schema
+##  Database Schema
 
 The JSON data is normalized into three relational tables.
 
