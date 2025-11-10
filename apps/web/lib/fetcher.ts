@@ -1,17 +1,16 @@
-import axios from 'axios';
+// apps/web/lib/fetcher.ts
 
-console.log("Fetcher Base URL:", process.env.NEXT_PUBLIC_API_BASE);
+import axios from "axios";
 
-export const api = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_BASE,
-});
+// This line correctly checks for the environment variable first.
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001/api";
 
-export const fetcher = async (url: string) => {
-  try {
-    const response = await api.get(url);
-    return response.data;
-  } catch (error) {
-    console.error(`Error fetching ${url}:`, error);
-    throw error;
-  }
-};
+export const fetcher = (url: string) =>
+  axios.get(`${API_BASE_URL}${url}`).then((res) => res.data);
+
+// You will need a similar setup for your Vanna AI calls
+const VANNA_API_BASE_URL = process.env.NEXT_PUBLIC_VANNA_AI_URL || "http://localhost:8000";
+
+// Example function for chatting
+export const postToVanna = (message: string) =>
+  axios.post(`${VANNA_API_BASE_URL}/chat`, { message }).then((res) => res.data);
