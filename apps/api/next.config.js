@@ -11,7 +11,7 @@ const nextConfig = {
           // Allow requests from your frontend development server
           {
             key: "Access-Control-Allow-Origin",
-            value: "full-analyticsps.vercel.app", 
+            value: "https://full-analyticsps.vercel.app", 
           },
           {
             key: "Access-Control-Allow-Methods",
