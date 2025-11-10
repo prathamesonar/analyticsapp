@@ -1,5 +1,3 @@
-
-
 'use client';
 
 import React, { useState, useRef, useEffect } from 'react';
@@ -11,7 +9,7 @@ import axios from 'axios';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
-import { api } from '@/lib/fetcher';
+// import { api } from '@/lib/fetcher'; // This import was unused, so I've removed it.
 
 interface Message {
   id: number;
@@ -22,6 +20,10 @@ interface Message {
   explanation?: string;
   error?: string;
 }
+
+// Define the Vanna AI URL using the environment variable
+// This will use your Vercel variable in production and fallback to localhost for development
+const VANNA_AI_URL = process.env.NEXT_PUBLIC_VANNA_AI_URL || 'http://localhost:8000';
 
 export function ChatUI() {
   const [messages, setMessages] = useState<Message[]>([]);
@@ -39,13 +41,14 @@ export function ChatUI() {
     setLoading(true);
 
     try {
-      // Call the Vanna AI backend on port 8000
-      const response = await axios.post('http://localhost:8000/chat', { 
-        message: userMessage.text 
+      // *** UPDATED LINE ***
+      // Call the Vanna AI backend using the environment variable
+      const response = await axios.post(`${VANNA_AI_URL}/chat`, {
+        message: userMessage.text
       });
-      
+
       console.log('Response from Vanna:', response.data);
-      
+
       const { response: aiResponse, sql, data, error } = response.data;
 
       if (error) {
@@ -112,7 +115,7 @@ export function ChatUI() {
                 {columns.map((col) => {
                   const value = row[col];
                   let displayValue = '';
-                  
+
                   if (value === null || value === undefined) {
                     displayValue = '-';
                   } else if (typeof value === 'number') {
@@ -122,7 +125,7 @@ export function ChatUI() {
                   } else {
                     displayValue = String(value);
                   }
-                  
+
                   return (
                     <TableCell key={`${rowIndex}-${col}`} className="px-2 py-1 truncate max-w-[100px]">
                       {displayValue}
@@ -157,14 +160,14 @@ export function ChatUI() {
             <div key={msg.id} className={`mb-4 max-w-[85%] ${msg.sender === 'user' ? 'ml-auto' : 'mr-auto'}`}>
               <div
                 className={`p-4 rounded-lg shadow-sm ${
-                  msg.sender === 'user' 
-                    ? 'bg-blue-500 text-white' 
+                  msg.sender === 'user'
+                    ? 'bg-blue-500 text-white'
                     : 'bg-gray-100 text-gray-900 border border-gray-200'
                 }`}
               >
                 <p className="font-semibold text-sm">{msg.sender === 'user' ? "You" : "AI Assistant"}</p>
                 <p className="mt-2 text-sm">{msg.text}</p>
-                
+
                 {/* Bot Response Details */}
                 {msg.sender === 'bot' && (
                   <>
@@ -177,14 +180,14 @@ export function ChatUI() {
                         </pre>
                       </div>
                     )}
-                    
+
                     {msg.data && msg.data.length > 0 && (
                       <div className="mt-3">
                         <p className="font-semibold text-xs text-gray-700">Results ({msg.data.length} rows):</p>
                         {renderDataResult(msg.data)}
                       </div>
                     )}
-                    
+
                     {msg.error && (
                       <div className="mt-2 p-2 bg-red-100 rounded">
                         <p className="text-xs text-red-700">❌ Error: {msg.error}</p>
