@@ -11,7 +11,7 @@ const nextConfig = {
           // Allow requests from your frontend development server
           {
             key: "Access-Control-Allow-Origin",
-            value: "http://localhost:3000", 
+            value: "https://analyticsapp-web.vercel.app", 
           },
           {
             key: "Access-Control-Allow-Methods",
